@@ -1,23 +1,29 @@
 package ku.restaurant.entity;
 
+
 import jakarta.persistence.*;
 import lombok.Data;
+
 
 import java.time.Instant;
 import java.util.UUID;
 
-//auto gen get and set
+
 @Data
 @Entity
-public class Restaurant {
-//    secure but not efficient
+@Table(name = "user_info")
+public class User {
     @Id
     @GeneratedValue
     private UUID id;
 
+
     @Column(unique = true)
+    private String username;
+    private String password;
+
+
     private String name;
-    private double rating;
-    private String location;
+    private String role;
     private Instant createdAt;
 }
