@@ -35,8 +35,25 @@ public class UserService {
         dao.setName(request.getName());
         dao.setRole("ROLE_USER");
         dao.setCreatedAt(Instant.now());
-
-
         userRepository.save(dao);
     }
+
+    public User getUser(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    public User findOrCreateGoogleUser(String email, String name) {
+        User user = userRepository.findByUsername(email);
+        if (user == null) {
+            User dao = new User();
+            dao.setUsername(email);
+            dao.setName(name);
+            dao.setPassword(encoder.encode("NO_PASSWORD"));
+            dao.setRole("ROLE_USER");
+            dao.setCreatedAt( Instant.now() );
+            user = userRepository.save(dao);
+        }
+        return user;
+    }
+
 }

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -41,10 +42,17 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    @Bean
+    public JwtCookieAuthFilter authenticationJwtCookieFilter() {
+        return new JwtCookieAuthFilter();
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(Customizer.withDefaults())
+
+
                 // Disable CSRF (not needed for stateless JWT)
                 .csrf(csrf -> csrf.disable())
 
@@ -80,7 +88,7 @@ public class SecurityConfig {
 
 
         // Add the JWT Token filter
-        http.addFilterBefore(authenticationJwtTokenFilter(),
+        http.addFilterBefore(authenticationJwtCookieFilter(),
                 UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
